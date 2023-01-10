@@ -1,7 +1,8 @@
 from django.shortcuts import render
+from lettings.models import Letting
 
 
-def lettings_index(request):
+def index(request):
     """
     Aenean leo magna, vestibulum et tincidunt fermentum, consectetur quis velit.
     Sed non placerat massa. Integer est nunc, pulvinar a tempor et, bibendum id arcu.
@@ -10,7 +11,7 @@ def lettings_index(request):
     """
     lettings_list = Letting.objects.all()
     context = {'lettings_list': lettings_list}
-    return render(request, 'lettings_index.html', context)
+    return render(request, 'index.html', context)
 
 
 def letting(request, letting_id):
