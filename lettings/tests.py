@@ -1,27 +1,28 @@
+from django.test import TestCase
 from django.urls import reverse
-from django.test import Client
-import pytest
-from pytest_django.asserts import assertTemplateUsed
+from lettings.models import Address, Letting
 
 
-client = Client()
+class LettingTestClass(TestCase):
+    def setUp(self):
+        self.address = Address.objects.create(
+            number=1,
+            street="street test",
+            city="TestCity",
+            state="testing",
+            zip_code=11111,
+            country_iso_code="TEST"
+        )
+        self.letting = Letting.objects.create(title="Test Letting", address=self.address)
 
+    def test_lettings_index(self):
+        response = self.client.get(reverse('lettings:index'))
+        self.assertIn(b'<title>Lettings</title>', response.content)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'lettings/index.html')
 
-@pytest.mark.django_db
-def test_lettings_index():
-    response = client.get(reverse('lettings:index'))
-    content = response.content.decode("utf-8")
-
-    assert "<title>Lettings</title>" in content
-    assert response.status_code == 200
-    assertTemplateUsed(response, "lettings/index.html")
-
-
-@pytest.mark.django_db
-def test_lettings_detail():
-    url = reverse('lettings:letting', args=[2])
-    response = client.get(url)
-    content = response.content.decode("utf-8")
-
-    assert response.status_code == 200
-    assert "<title>Oceanview Retreat</title>" in content
+    def test_lettings_detail(self):
+        response = self.client.get(reverse('lettings:letting', args=[self.letting.id]))
+        self.assertEquals(response.status_code, 200)
+        self.assertIn(b'<title>Test Letting</title>', response.content)
+        self.assertTemplateUsed(response, 'lettings/letting.html')

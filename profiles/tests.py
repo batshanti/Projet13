@@ -1,16 +1,28 @@
+from django.contrib.auth.models import User
+from django.test import TestCase
 from django.urls import reverse
-from django.test import Client
-import pytest
-from pytest_django.asserts import assertTemplateUsed
-
-client = Client()
+from profiles.models import Profile
 
 
-@pytest.mark.django_db
-def test_profile_index():
-    response = client.get(reverse('profiles:index'))
-    content = response.content.decode("utf-8")
+class ProfileTestClass(TestCase):
 
-    assert "<title>Profiles</title>" in content
-    assert response.status_code == 200
-    assertTemplateUsed(response, "profiles/index.html")
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="user_test",
+            password="passwordtest1234",
+            email="user_test@yahoo.com"
+        )
+        self.profile = Profile.objects.create(user=self.user, favorite_city="test_city")
+
+    def test_profile_index(self):
+        response = self.client.get(reverse('profiles:index'))
+        self.assertIn(b'<title>Profiles</title>', response.content)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'profiles/index.html')
+
+    def test_profile_detail(self):
+        response = self.client.get(reverse('profiles:profile', args=[self.user.username]))
+        self.assertIn(b'<title>user_test</title>', response.content)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'profiles/index.html')
+
