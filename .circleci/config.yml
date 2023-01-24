@@ -12,25 +12,22 @@ jobs:
       - run:
           name: Run tests
           command: python manage.py test
-    build-and-push-dockerhub:
-      docker:
-        - image: cimg/python:3.11.1
-      steps:
-        - checkout
-        - setup_remote_docker:
-          docker_layer_caching: true
-        - run:
-          name: Build Docker image
-          command: docker build -t docker-oc-lettings:0.1 .
-        - run:
-          name: Login to DockerHub
-          command: docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
-        - run:
-          name: Link to DockerHub
-          command: docker tag docker-oc-lettings:0.1 $DOCKERHUB_USERNAME/oc-lettings-site:$CIRCLE_SHA1
-        - run:
-          name: push Docker image
-          command: docker push $DOCKERHUB_USERNAME/oc-lettings-site:$CIRCLE_SHA1
+  build-and-push-dockerhub:
+    docker:
+       - image: cimg/python:3.11.1
+    steps:
+      - checkout
+      - setup_remote_docker:
+         docker_layer_caching: true
+      - run:
+         name: Build Docker image
+         command: docker build -t docker-oc-lettings:0.1 .
+      - run:
+         name: Login to DockerHub
+         command: docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
+      - run:
+         name: push Docker image
+         command: docker push $DOCKERHUB_USERNAME/oc-lettings:CC
 
 workflows:
   test:
