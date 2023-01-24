@@ -10,13 +10,3 @@ class HomeTestClass(TestCase):
         self.assertIn(b'<title>Holiday Homes</title>', response.content)
 
 
-
-
-# def test_home():
-#     client = Client()
-#     response = client.get(reverse('home:index'))
-#     content = response.content.decode("utf-8")
-#
-
-#     assert response.status_code == 200
-#     assertTemplateUsed(response, "home/index.html")

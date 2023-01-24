@@ -24,5 +24,5 @@ class ProfileTestClass(TestCase):
         response = self.client.get(reverse('profiles:profile', args=[self.user.username]))
         self.assertIn(b'<title>user_test</title>', response.content)
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'profiles/index.html')
+        self.assertTemplateUsed(response, 'profiles/profile.html')
 
