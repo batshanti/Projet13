@@ -26,8 +26,11 @@ jobs:
          name: Login to DockerHub
          command: docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
       - run:
+         name: Link to DockerHub
+         command: docker tag docker-oc-lettings:0.1 $DOCKERHUB_USERNAME/oc-lettings:$CIRCLE_SHA1
+      - run:
          name: push Docker image
-         command: docker push redshift314/batshanti:tagname
+         command: docker push $DOCKERHUB_USERNAME/oc-lettings:$CIRCLE_SHA1
 workflows:
   test:
     jobs:
