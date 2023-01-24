@@ -12,6 +12,10 @@ jobs:
       - run:
           name: Run tests
           command: python manage.py test
+      - run: 
+          name: Run Flake8
+          command: flake8
+
   build-and-push-dockerhub:
     docker:
        - image: cimg/python:3.11.1
