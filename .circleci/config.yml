@@ -27,8 +27,7 @@ jobs:
          command: docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
       - run:
          name: push Docker image
-         command: docker push redshift314/oc-lettings:cc
-
+         command: docker push redshift314/batshanti:tagname
 workflows:
   test:
     jobs:
