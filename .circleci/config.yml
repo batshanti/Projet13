@@ -59,4 +59,6 @@ workflows:
   test:
     jobs:
       - test
+      - build-and-push-dockerhub
+      - build-and-push-heroku
 
