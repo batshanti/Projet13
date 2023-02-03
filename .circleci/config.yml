@@ -50,15 +50,23 @@ jobs:
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a $HEROKU_APP_NAME web
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a $HEROKU_APP_NAME web
 
-
-
-
-
-
 workflows:
   test:
     jobs:
       - test
-      - build-and-push-dockerhub
-      - build-and-push-heroku
+      - build-and-push-dockerhub:
+         requires:
+            - test
+         filters:
+            branches:
+               only:
+                  - main
+      - build-and-push-heroku:
+         requires:
+            - test
+            - build-and-push-dockerhub
+         filters:
+            branches:
+               only:
+                  - main
 
