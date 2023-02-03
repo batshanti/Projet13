@@ -8,5 +8,3 @@ class HomeTestClass(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'home/index.html')
         self.assertIn(b'<title>Holiday Homes</title>', response.content)
-
-

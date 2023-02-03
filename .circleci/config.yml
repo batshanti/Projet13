@@ -1,0 +1,72 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: cimg/python:3.11.1
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: pip install -r requirements.txt
+      - run:
+          name: Run tests
+          command: python manage.py test
+      - run: 
+          name: Run Flake8
+          command: flake8
+
+  build-and-push-dockerhub:
+    docker:
+       - image: cimg/python:3.11.1
+    steps:
+      - checkout
+      - setup_remote_docker:
+         docker_layer_caching: true
+      - run:
+         name: Build Docker image
+         command: docker build -t docker-oc-lettings:0.1 .
+      - run:
+         name: Login to DockerHub
+         command: docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
+      - run:
+         name: Link to DockerHub
+         command: docker tag docker-oc-lettings:0.1 $DOCKERHUB_USERNAME/oc-lettings:$CIRCLE_SHA1
+      - run:
+         name: push Docker image
+         command: docker push $DOCKERHUB_USERNAME/oc-lettings:$CIRCLE_SHA1
+
+  build-and-push-heroku:
+    machine: true
+    steps:
+       - checkout
+       - run:
+          name: Install heroku CLI
+          command: curl https://cli-assets.heroku.com/install.sh | sh
+       - run:
+          name: Build and push Docker image to Heroku
+          command: |
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a $HEROKU_APP_NAME web
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a $HEROKU_APP_NAME web
+
+workflows:
+  test:
+    jobs:
+      - test
+      - build-and-push-dockerhub:
+         requires:
+            - test
+         filters:
+            branches:
+               only:
+                  - main
+      - build-and-push-heroku:
+         requires:
+            - test
+            - build-and-push-dockerhub
+         filters:
+            branches:
+               only:
+                  - main
+
