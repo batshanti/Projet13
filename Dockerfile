@@ -8,4 +8,6 @@ ENV PORT = 8080
 
 COPY . /app
 
+RUN python manage.py collectstatic --noinput --clear
+
 CMD python manage.py runserver 0.0.0.0:$PORT
