@@ -113,3 +113,12 @@ Paramétrer les variables d'environnement (_Project Settings_ > _Environment Var
 | HEROKU_APP_NAME | Nom de l'application Heroku |
 | SECRET_KEY | Clé secrète Django  |
 | SENTRY_DSN | Data Source Name (DSN) |
+
+### Heroku
+- installer Heroku Commande Line Interface ([CLI](https://devcenter.heroku.com/articles/getting-started-with-python#set-up)).
+
+```
+heroku login
+heroku container:login
+heroku create oc-lettingss
+heroku git:remote -a oc-lettingss
