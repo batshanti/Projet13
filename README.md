@@ -76,4 +76,40 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 - Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
 
-tests
+## Déploiement
+
+Le déploiement de l'application se fait via un pipeline CircleCI.
+Lors de la modification du code sur github (  git push ), le pipeline CircleCI va déclencher les actions suivantes :
+Si modification sur une branche autre que **main**:
+ - exécution des tests et du linting du code
+
+Si modification sur la branche **main** :
+- exécution des tests et du linting du code.
+   - Si,  exécution des tests et du linting du code > OK : 
+      - Alors :
+        - Création d'une image Docker et dépôt sur DockerHub.
+        - Déploiement de l'application sur Heroku.
+
+
+### Prérequis
+Afin d'effectuer le déploiement de cette application, il convient d'avoir ou de créer des comptes sur les plateformes suivantes :
+| Plateforme | Description | lien |
+|--|--|--|
+| **Github**  | héberge le code source du projet |https://github.com/|
+| **CircleCI**  | Application d'intégration continue et de livraison continue | https://circleci.com/signup/|
+| **Docker Hub** | héberge une copie de l'image du projet |https://hub.docker.com/signup|
+| **Heroku** | Héberge l'application | https://signup.heroku.com/php |
+| **Sentry** | Assure le monitoring et collecte les erreurs rencontrées par l'application |https://sentry.io/signup/|
+
+### CircleCI
+Initialiser un projet sur CircleCI "Set Up Project". Sélectionner la branche _master_ comme source pour le fichier _.circleci/config.yml.
+
+Paramétrer les variables d'environnement (_Project Settings_ > _Environment Variables_)
+| Variables d'environnement  | Description |
+|--|--|
+| DOCKERHUB_USERNAME | Nom d’mutilateur du compte Dockerhub  |
+| DOCKERHUB_PASSWORD | Mot de passe du compte Dockerhub |
+| HEROKU_API_KEY | Clé de l'application Heroku |
+| HEROKU_APP_NAME | Nom de l'application Heroku |
+| SECRET_KEY | Clé secrète Django  |
+| SENTRY_DSN | Data Source Name (DSN) |
