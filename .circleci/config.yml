@@ -53,7 +53,7 @@ jobs:
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a $HEROKU_APP_NAME web
 
 workflows:
-  test:
+  Oc-Lettings:
     jobs:
       - test
       - build-and-push-dockerhub:
